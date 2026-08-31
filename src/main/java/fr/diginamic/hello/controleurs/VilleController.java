@@ -13,9 +13,6 @@ import java.util.List;
 @RequestMapping("/villes")
 public class VilleController {
 
-
-    private VilleController villeController;
-
     @GetMapping
     public List<Ville> getVilles() {
         ArrayList<Ville> villes = new ArrayList<>();
