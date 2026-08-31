@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/hello")
 public class HelloControleur {
+
     @Autowired
     private final HelloService helloService;
 
