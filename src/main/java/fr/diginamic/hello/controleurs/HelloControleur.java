@@ -10,15 +10,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/hello")
 public class HelloControleur {
 
-    @Autowired
-    private final HelloService helloService;
 
-    public HelloControleur(HelloService helloService) {
-        this.helloService = helloService;
+    private HelloService service;
+
+    public HelloControleur(HelloService service) {
+        this.service = service;
     }
 
     @GetMapping
     public String direHello() {
-        return helloService.salutations();
+
+        return service.salutations();
     }
 }
