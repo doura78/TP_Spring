@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -17,9 +18,11 @@ public class VilleController {
 
     @GetMapping
     public List<Ville> getVilles() {
-        return List.of(
-                new Ville("Montpellier", 307101),
-                new Ville("Marseille", 350751)
-        );
+        ArrayList<Ville> villes = new ArrayList<>();
+
+                villes.add(new Ville("Montpellier", 307101));
+                villes.add(new Ville("Marseille", 350751));
+
+                return villes;
     }
 }
