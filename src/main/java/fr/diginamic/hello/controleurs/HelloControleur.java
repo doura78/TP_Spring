@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class HelloControleur {
 
 
+    //Si @Autowired pas de constructeur
     private HelloService service;
 
     public HelloControleur(HelloService service) {
