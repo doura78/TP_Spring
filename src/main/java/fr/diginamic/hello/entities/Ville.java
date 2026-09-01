@@ -1,26 +1,26 @@
-package fr.diginamic.hello.ville;
+package fr.diginamic.hello.entities;
 
 public class Ville {
 
-    private int id;
+    private Integer id;
     private String nom;
-    private int population;
+    private Integer population;
 
     public Ville() {
     }
 
-    public Ville(int id, String nom, int population) {
+    public Ville(Integer id, String nom, Integer population) {
         this.id = id;
         this.nom = nom;
         this.population = population;
 
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
     public String getNom() {
@@ -31,11 +31,11 @@ public class Ville {
         this.nom = nom;
     }
 
-    public int getPopulation() {
+    public Integer getPopulation() {
         return population;
     }
 
-    public void setPopulation(int population) {
+    public void setPopulation(Integer population) {
         this.population = population;
     }
 }
