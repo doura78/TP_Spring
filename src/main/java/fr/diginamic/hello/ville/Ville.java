@@ -28,5 +28,13 @@ public Ville() {
     public void setPopulation(int population) {
         this.population = population;
     }
+
+    @Override
+    public String toString() {
+        return "Ville{" +
+                "nom='" + nom + '\'' +
+                ", population=" + population +
+                '}';
+    }
 }
 
