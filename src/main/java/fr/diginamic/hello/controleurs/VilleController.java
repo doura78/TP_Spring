@@ -2,6 +2,13 @@ package fr.diginamic.hello.controleurs;
 
 import fr.diginamic.hello.exceptions.VilleException;
 import fr.diginamic.hello.entities.Ville;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.annotation.PostConstruct;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,15 +29,50 @@ public class VilleController {
         villes.add(new Ville(prochainId++, "Montpellier", 307101));
         villes.add(new Ville(prochainId++, "Marseille", 350751));
         villes.add(new Ville(prochainId++, "Milan", 254365));
+
+
     }
+
+    @Operation(summary = "Retourne la liste de toutes les villes")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Liste des villes au format JSON",
+                    content = {
+                            @Content(
+                                    mediaType = "application/json",
+                                    array = @ArraySchema(schema =
+                                    @Schema(implementation = Ville.class)))})
+    })
 
     @GetMapping
     public List<Ville> getVilles() {
         return villes;
     }
 
+    @Operation(summary = "Retourne une ville à partir de son identifiant")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Ville trouvée",
+                    content = {
+                            @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = Ville.class)
+                            )
+                    }
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Ville non trouvée",
+                    content = @Content()
+            )
+    })
+
     @GetMapping("/{id}")
-    public ResponseEntity<Ville> getVille(@PathVariable int id) {
+    public ResponseEntity<Ville> getVille(@Parameter(description = "Identifiant de la ville à récupérer",
+            example = "1", required = true)
+                                          @PathVariable int id) {
         for (Ville ville : villes) {
             if (ville.getId() == id) {
                 return ResponseEntity.ok(ville);
@@ -39,13 +81,33 @@ public class VilleController {
         return ResponseEntity.notFound().build();
     }
 
+    @Operation(summary = "Crée une nouvelle ville")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Ville insérée avec succès",
+                    content = @Content(mediaType = "text/plain")
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Erreur de validation ou ville déjà existante",
+                    content = @Content(mediaType = "text/plain")
+            )
+    })
 
     @PostMapping
-    public ResponseEntity<String> creerVille(@RequestBody Ville ville) throws VilleException {
+    public ResponseEntity<String> creerVille(@io.swagger.v3.oas.annotations.parameters.RequestBody(
+            description = "Ville à créer",
+            required = true,
+            content = @Content(schema = @Schema(implementation = Ville.class))
+    )
+                                             @RequestBody Ville ville) throws VilleException {
+
+        verifierVille(ville);
 
         for (Ville villeExistante : villes) {
             if (villeExistante.getNom().equalsIgnoreCase(ville.getNom())) {
-                throw new VilleException("Ville existente");
+                throw new VilleException("La ville est déja existente");
             }
         }
 
@@ -56,8 +118,32 @@ public class VilleController {
 
     }
 
+    @Operation(summary = "Modifie une ville existante")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Ville modifiée avec succès",
+                    content = @Content(mediaType = "text/plain")
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Erreur de validation ou ville introuvable",
+                    content = @Content(mediaType = "text/plain")
+            )
+    })
+
     @PutMapping("/{id}")
-    public ResponseEntity<String> modifierVille(@PathVariable int id, @RequestBody Ville villeModifiee) throws VilleException {
+    public ResponseEntity<String> modifierVille(@Parameter
+         (description = "Identifiant de la ville à modifier", example = "2", required = true)
+          @PathVariable int id,
+
+          @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                  description = "Nouvelles données de la ville",
+                  required = true,
+                  content = @Content(schema = @Schema(implementation = Ville.class)))
+
+          @RequestBody Ville villeModifiee) throws VilleException {
+
         for (Ville ville : villes) {
             if (ville.getId() == id) {
                 ville.setNom(villeModifiee.getNom());
@@ -68,8 +154,25 @@ public class VilleController {
         throw new VilleException("Ville non trouvée");
     }
 
+    @Operation(summary = "Supprime une ville à partir de son identifiant")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Ville supprimée avec succès",
+                    content = @Content(mediaType = "text/plain")
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Ville introuvable",
+                    content = @Content(mediaType = "text/plain")
+            )
+    })
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> supprimerVille(@PathVariable int id) throws VilleException {
+    public ResponseEntity<String> supprimerVille( @Parameter(description = "Identifiant de la ville à supprimer",
+            example = "3", required = true)
+
+            @PathVariable int id) throws VilleException {
 
         for (int i = 0; i < villes.size(); i++) {
             if (villes.get(i).getId() == id) {
@@ -80,8 +183,31 @@ public class VilleController {
         throw new VilleException("Ville non trouvée");
     }
 
+    @Operation(summary = "Recherche les villes dont le nom commence par une chaîne donnée")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Liste des villes trouvées",
+                    content = {
+                            @Content(
+                                    mediaType = "application/json",
+                                    array = @ArraySchema(schema = @Schema(implementation = Ville.class))
+                            )
+                    }
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Aucune ville trouvée",
+                    content = @Content(mediaType = "text/plain")
+            )
+    })
+
     @GetMapping("/recherche/nom")
-    public List<Ville> rechercherparDebutNom(@RequestParam String nom) throws VilleException {
+    public List<Ville> rechercherparDebutNom(@Parameter(description = "Début du nom à rechercher",
+            example = "Mo", required = true)
+
+            @RequestParam String nom) throws VilleException {
+
         List<Ville> resultat = new ArrayList<>();
 
         for (Ville ville : villes) {
@@ -119,7 +245,7 @@ public class VilleController {
         List<Ville> resultat = new ArrayList<>();
 
         for (Ville ville : villes) {
-            if (ville.getPopulation() >= min && ville.getPopulation() <max) {
+            if (ville.getPopulation() >= min && ville.getPopulation() < max) {
                 resultat.add(ville);
             }
         }
