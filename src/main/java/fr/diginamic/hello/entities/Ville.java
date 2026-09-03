@@ -29,7 +29,7 @@ public class Ville {
     /*
      * Population de la ville
      */
-    @Min(value = 1, message = "La population doit être supérieure ou égale à 1")
+    @Min(value = 10, message = "La population doit être supérieure ou égale à 10")
     private Integer population;
 
     /*
