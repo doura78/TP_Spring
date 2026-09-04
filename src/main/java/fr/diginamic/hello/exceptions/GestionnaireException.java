@@ -14,10 +14,19 @@ public class GestionnaireException {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 
+    @ExceptionHandler(DepartementException.class)
+    public ResponseEntity<String> handlerDepartementException(DepartementException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<String> traiterException(MethodArgumentNotValidException e) {
-
         FieldError fe = e.getBindingResult().getFieldError();
-        return ResponseEntity.badRequest().body(fe.getDefaultMessage());
+
+        if (fe != null) {
+            return ResponseEntity.badRequest().body(fe.getDefaultMessage());
+        }
+
+        return ResponseEntity.badRequest().body("Requête invalide");
     }
 }

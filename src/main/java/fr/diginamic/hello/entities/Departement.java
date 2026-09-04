@@ -1,63 +1,58 @@
 package fr.diginamic.hello.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 
 import java.util.List;
 
-/*
- * Classe représentant un département
- * * Cette classe est une entité JPA persistée dans la base de données.
- * Un département peut être associé à plusieurs villes.
- *  L'annotation {@link JsonIgnore} placée sur la liste des villes permet
- * d'éviter une boucle infinie lors de la conversion de l'objet en JSON.
+/**
+ * Représente un département persisté en base de données.
+ * Un département peut être associé à plusieurs villes.</p>
+ * L'annotation {@link JsonIgnore} sur la liste des villes permet
+ * d'éviter une boucle infinie lors de la sérialisation JSON.
  */
 @Entity
 public class Departement {
 
-    /*
-     * Identifiant unique du département
-     * La valeur est générée automatiquement par la base de données.
+    /**
+     * Identifiant unique du département.
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    /*
-     * Code du département
+    /**
+     * Code du département.
      */
-    @Min(value = 1, message = "Le code du département doit être supérieure ou égale à 1")
     private String code;
 
-    /*
-     * Nom du département
+    /**
+     * Nom du département.
      */
-    @NotNull
-    @Size(min = 2, message = "Le nom du département doit contenir au moins 2 caractères")
     private String nom;
 
-    /*
-     * Liste des villes appartenant au département
+    /**
+     * Liste des villes appartenant au département.
      */
     @JsonIgnore
     @OneToMany(mappedBy = "departement")
     private List<Ville> villes;
 
-    /*
-     * Constructeur sans argument
+    /**
+     * Construit un département vide.
      */
     public Departement() {
-
     }
 
-    /*
-     * Constructeur avec arguments
-     * @param id Identifiant unique du département
-     * @param code Code du département
-     * @param nom Nom du département
+    /**
+     * Construit un département avec ses principales informations
+     * @param id identifiant du département
+     * @param code code du département
+     * @param nom nom du département
      */
     public Departement(Integer id, String code, String nom) {
         this.id = id;
@@ -65,57 +60,73 @@ public class Departement {
         this.nom = nom;
     }
 
-    /*
-     * @return id Identifiant unique du département
+    /**
+     * Retourne l'identifiant du département.
+     *
+     * @return identifiant du département
      */
     public Integer getId() {
         return id;
     }
 
-    /*
-     * @param id Identifiant unique du département
+    /**
+     * Modifie l'identifiant du département.
+     *
+     * @param id identifiant du département
      */
     public void setId(Integer id) {
         this.id = id;
     }
 
-    /*
-     * @return code Code du département
+    /**
+     * Retourne le code du département.
+     *
+     * @return code du département
      */
     public String getCode() {
         return code;
     }
 
-    /*
-     * @param code Code du département
+    /**
+     * Modifie le code du département.
+     *
+     * @param code code du département
      */
     public void setCode(String code) {
         this.code = code;
     }
 
-    /*
-     * @return nom Nom du département
+    /**
+     * Retourne le nom du département.
+     *
+     * @return nom du département
      */
     public String getNom() {
         return nom;
     }
 
-    /*
-     * @param nom Nom du département
+    /**
+     * Modifie le nom du département.
+     *
+     * @param nom nom du département
      */
     public void setNom(String nom) {
         this.nom = nom;
     }
 
-    /*
-     * @return villes Liste des villes appartenant au département
+    /**
+     * Retourne les villes du département.
+     *
+     * @return liste des villes
      */
     public List<Ville> getVilles() {
         return villes;
     }
 
-    /*
-     * @param villes Liste des villes appartenant au département
+    /**
+     * Modifie la liste des villes du département.
+     *
+     * @param villes liste des villes
      */
     public void setVilles(List<Ville> villes) {
         this.villes = villes;
