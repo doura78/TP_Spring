@@ -1,8 +1,8 @@
 package fr.diginamic.hello.service;
 
-import fr.diginamic.hello.dao.DepartementDao;
 import fr.diginamic.hello.entities.Departement;
 import fr.diginamic.hello.exceptions.DepartementException;
+import fr.diginamic.hello.repositories.DepartementRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,39 +12,39 @@ import java.util.List;
 public class DepartementService {
 
     @Autowired
-    private DepartementDao departementDao;
+    private DepartementRepository departementRepository;
 
     public List<Departement> extractDepartements() {
-        return departementDao.extraireDepartements();
+        return departementRepository.findAll();
     }
 
     public Departement extractDepartement(int idDepartement) {
-        return departementDao.extraireDepartement(idDepartement);
+        return departementRepository.findById(idDepartement).orElse(null);
     }
 
     public Departement extractDepartementParNom(String nomDepartement) {
-        return departementDao.extraireDepartementParNom(nomDepartement)
+        return departementRepository.findByNomStartingWithIgnoreCase(nomDepartement)
                 .stream()
                 .findFirst()
                 .orElse(null);
     }
 
     public Departement extractDepartementParCode(String codeDepartement) {
-        return departementDao.extraireDepartementByCode(codeDepartement);
+        return departementRepository.findByCode(codeDepartement);
     }
 
     public List<Departement> insertDepartement(Departement departement) {
-        departementDao.insererDepartement(departement);
-        return departementDao.extraireDepartements();
+        departementRepository.save(departement);
+        return departementRepository.findAll();
     }
 
     public List<Departement> modifierDepartement(Departement departement) {
-        departementDao.mettreAJourDepartement(departement);
-        return departementDao.extraireDepartements();
+        departementRepository.save(departement);
+        return departementRepository.findAll();
     }
 
     public List<Departement> supprimerDepartement(int idDepartement) throws DepartementException {
-        Departement departement = departementDao.extraireDepartement(idDepartement);
+        Departement departement = departementRepository.findById(idDepartement).orElse(null);
 
         if (departement == null) {
             throw new DepartementException("Département introuvable");
@@ -54,7 +54,7 @@ public class DepartementService {
             throw new DepartementException("Impossible de supprimer ce département car il contient encore des villes");
         }
 
-        departementDao.supprimerDepartement(idDepartement);
-        return departementDao.extraireDepartements();
+        departementRepository.deleteById(idDepartement);
+        return departementRepository.findAll();
     }
 }

@@ -43,14 +43,14 @@ public class VilleDao {
     }
 
     /**
-     * Extrait les villes dont le nom commence par un suffixe donné.
-     * @param suffixe Suffixe à rechercher
+     * Extrait les villes dont le nom commence par un prefixe donné.
+     * @param prefixe Prefixe à rechercher
      * @return Liste des villes correspondantes
      */
-    public List<Ville> extraireVillesParNom(String suffixe) {
-        TypedQuery<Ville> query = em.createQuery("SELECT v FROM Ville v WHERE lower(v.nom) LIKE lower(:suffixe)", Ville.class);
+    public List<Ville> extraireVillesParNom(String prefixe) {
+        TypedQuery<Ville> query = em.createQuery("SELECT v FROM Ville v WHERE lower(v.nom) LIKE lower(:prefixe)", Ville.class);
         return query
-                .setParameter("suffixe", suffixe + "%")
+                .setParameter("prefixe", prefixe + "%")
                 .getResultList();
     }
 
