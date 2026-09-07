@@ -19,7 +19,7 @@ public class DepartementService {
     private DepartementRepository departementRepository;
 
     @Value("${application.init}")
-    private boolean applicationInit;
+    private boolean initData;
 
     public List<Departement> extractDepartements() {
         return departementRepository.findAll();
@@ -67,7 +67,7 @@ public class DepartementService {
 
     @PostConstruct
     public void initData() {
-        if (!applicationInit) {
+        if (!initData) {
             return;
         }
 
