@@ -42,4 +42,7 @@ public class VilleService {
     public List<Ville> rechercherPlusGrandesVillesDepartement(int idDepartement, int n) {
         return villeRepository.findByDepartementIdOrderByPopulationDesc(idDepartement, PageRequest.of(0, n));
     }
+    public List<Ville> rechercherParCodeDepartement(String code) {
+        return villeRepository.findByDepartementCodeOrderByPopulationDesc(code);
+    }
 }
