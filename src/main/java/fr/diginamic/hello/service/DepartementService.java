@@ -80,18 +80,17 @@ public class DepartementService {
 
         for (int i = 0; i < dto.length; i++) {
             Departement departementDB = departementRepository.findByCode(dto[i].getCode());
-            departementDB.setNom(dto[i].getNom());
+
             if (departementDB == null) {
                 departementDB = new Departement();
-                departementDB.setNom((dto[i].getNom()));
-                departementDB.setCode(dto[i].getCode());
-                departementRepository.save(departementDB);
-            }
-            else {
                 departementDB.setNom(dto[i].getNom());
-                departementRepository.save(departementDB);
+                departementDB.setCode(dto[i].getCode());
+            } else {
+                departementDB.setNom(dto[i].getNom());
             }
 
+            departementRepository.save(departementDB);
         }
+
     }
 }
