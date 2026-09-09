@@ -1,32 +1,43 @@
 package fr.diginamic.hello.config;
 
+import fr.diginamic.hello.security.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @EnableMethodSecurity(securedEnabled = true)
 @Configuration
 public class SecurityConfig {
 
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public AuthenticationManager authenticationManager(
+            AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
 
-        http.csrf(csrf -> csrf.disable());
-        http.httpBasic(Customizer.withDefaults());
-
-        http.authorizeHttpRequests(auth -> auth
-//                .requestMatchers(HttpMethod.GET, "/villes/**").hasAnyRole("USER", "ADMIN")
-//                .requestMatchers(HttpMethod.POST, "/villes/**").hasRole("ADMIN")
-//                .requestMatchers(HttpMethod.PUT, "/villes/**").hasRole("ADMIN")
-//                .requestMatchers(HttpMethod.DELETE, "/villes/**").hasRole("ADMIN")
-                .anyRequest().authenticated()
-        );
-
+    @Bean
+    SecurityFilterChain filterChain(HttpSecurity http, JwtAuthenticationFilter jwtFilter)
+            throws Exception {
+        http.csrf(csrf -> csrf.disable())
+                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/login").permitAll()
+                        .anyRequest().authenticated()
+                )
+//                .headers(headers -> headers
+//                        .contentSecurityPolicy(csp -> csp
+//                                .policyDirectives("default-src 'self'")
+//                        )
+//                )
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
