@@ -6,6 +6,7 @@ import fr.diginamic.hello.service.DepartementService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,11 +18,12 @@ public class DepartementController {
     @Autowired
     private DepartementService departementService;
 
-    @GetMapping
+    @Secured({"ROLE_USER","ROLE_ADMIN"})    @GetMapping
     public List<Departement> getDepartements() {
         return departementService.extractDepartements();
     }
 
+    @Secured({"ROLE_USER","ROLE_ADMIN"})
     @GetMapping("/{id}")
     public ResponseEntity<Departement> getDepartement(@PathVariable int id) {
 
@@ -33,6 +35,7 @@ public class DepartementController {
         return ResponseEntity.ok(departement);
     }
 
+    @Secured({"ROLE_USER","ROLE_ADMIN"})
     @GetMapping("/recherche/nom")
     public List<Departement> rechercherparDebutNom(@RequestParam String nomDepartement) throws DepartementException {
 
@@ -44,6 +47,7 @@ public class DepartementController {
         return resultat;
     }
 
+    @Secured({"ROLE_ADMIN"})
     @PostMapping
     public List<Departement> creerDepartement(@Valid @RequestBody Departement departement) throws DepartementException {
 
@@ -51,6 +55,7 @@ public class DepartementController {
         return departementService.insertDepartement(departement);
     }
 
+    @Secured({"ROLE_ADMIN"})
     @PutMapping("/{id}")
     public List<Departement> modifierDepartement(@PathVariable int id, @Valid @RequestBody Departement departement)
             throws DepartementException {
@@ -59,6 +64,7 @@ public class DepartementController {
         return departementService.modifierDepartement( departement);
     }
 
+    @Secured({"ROLE_ADMIN"})
     @DeleteMapping("/{id}")
     public List<Departement> supprimerDepartement(@PathVariable int id)
             throws DepartementException {

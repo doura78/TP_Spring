@@ -6,6 +6,7 @@ import fr.diginamic.hello.entities.Ville;
 import fr.diginamic.hello.service.VilleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,6 +18,7 @@ public class VilleController {
     @Autowired
     private VilleService villeService;
 
+    @Secured({"ROLE_USER","ROLE_ADMIN"})
     @GetMapping
     public Page<Ville> getVilles(
             @RequestParam(defaultValue = "0") int page,
@@ -24,6 +26,7 @@ public class VilleController {
         return villeService.extractVilles(page, size);
     }
 
+    @Secured({"ROLE_USER","ROLE_ADMIN"})
     @GetMapping("/recherche/nom")
     public List<VilleDto> rechercherParNom(@RequestParam String prefixe) {
         return villeService.rechercherParNom(prefixe)
@@ -32,6 +35,7 @@ public class VilleController {
                 .toList();
     }
 
+    @Secured({"ROLE_USER","ROLE_ADMIN"})
     @GetMapping("/recherche/population-min")
     public List<VilleDto> rechercherParPopulationMin(@RequestParam int min) {
         return villeService.rechercherParPopulationMin(min)
@@ -40,6 +44,7 @@ public class VilleController {
                 .toList();
     }
 
+    @Secured({"ROLE_USER","ROLE_ADMIN"})
     @GetMapping("/recherche/population-entre")
     public List<VilleDto> rechercherParPopulationEntre(@RequestParam int min, @RequestParam int max) {
         return villeService.rechercherParPopulationEntre(min, max)
@@ -48,6 +53,7 @@ public class VilleController {
                 .toList();
     }
 
+    @Secured({"ROLE_USER","ROLE_ADMIN"})
     @GetMapping("/departement/{idDepartement}/population-min")
     public List<VilleDto> rechercherParDepartementEtPopulationMin(
             @PathVariable int idDepartement,
@@ -58,6 +64,7 @@ public class VilleController {
                 .toList();
     }
 
+    @Secured({"ROLE_USER","ROLE_ADMIN"})
     @GetMapping("/departement/{idDepartement}/population-entre")
     public List<VilleDto> rechercherParDepartementEtPopulationEntre(
             @PathVariable int idDepartement,
@@ -69,6 +76,7 @@ public class VilleController {
                 .toList();
     }
 
+    @Secured({"ROLE_USER","ROLE_ADMIN"})
     @GetMapping("/departement/{idDepartement}/plus-grandes")
     public List<VilleDto> rechercherPlusGrandesVillesDepartement(
             @PathVariable int idDepartement,
@@ -78,17 +86,19 @@ public class VilleController {
                 .map(VilleMapper::toDto)
                 .toList();
     }
-
+    @Secured({"ROLE_ADMIN"})
     @PostMapping
     public VilleDto creerVille(@RequestBody Ville ville) {
         return VilleMapper.toDto(villeService.creerVille(ville));
     }
 
+    @Secured({"ROLE_ADMIN"})
     @PutMapping("/{id}")
     public VilleDto modifierVille(@PathVariable int id, @RequestBody Ville ville) {
         return VilleMapper.toDto(villeService.modifierVille(id, ville));
     }
 
+    @Secured({"ROLE_ADMIN"})
     @DeleteMapping("/{id}")
     public void supprimerVille(@PathVariable int id) {
         villeService.supprimerVille(id);

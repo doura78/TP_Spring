@@ -1,13 +1,20 @@
 package fr.diginamic.hello.entities;
 
-import org.jspecify.annotations.Nullable;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import org.springframework.security.core.GrantedAuthority;
 
 /**
- * Par implémentation Utilisateur estr un GrantedAuthority
+ * Par implémentation Utilisateur est un GrantedAuthority
  */
-
+@Entity
 public class Role implements GrantedAuthority {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     private String name;
 
@@ -16,6 +23,14 @@ public class Role implements GrantedAuthority {
 
     public Role(String name) {
         this.name = name;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     @Override
