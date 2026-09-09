@@ -1,16 +1,12 @@
 package fr.diginamic.hello.controleurs;
 
 import fr.diginamic.hello.dto.VilleDto;
-import fr.diginamic.hello.entities.Ville;
 import fr.diginamic.hello.dto.VilleMapper;
+import fr.diginamic.hello.entities.Ville;
 import fr.diginamic.hello.service.VilleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -81,5 +77,20 @@ public class VilleController {
                 .stream()
                 .map(VilleMapper::toDto)
                 .toList();
+    }
+
+    @PostMapping
+    public VilleDto creerVille(@RequestBody Ville ville) {
+        return VilleMapper.toDto(villeService.creerVille(ville));
+    }
+
+    @PutMapping("/{id}")
+    public VilleDto modifierVille(@PathVariable int id, @RequestBody Ville ville) {
+        return VilleMapper.toDto(villeService.modifierVille(id, ville));
+    }
+
+    @DeleteMapping("/{id}")
+    public void supprimerVille(@PathVariable int id) {
+        villeService.supprimerVille(id);
     }
 }
